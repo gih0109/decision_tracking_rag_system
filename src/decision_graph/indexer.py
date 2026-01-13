@@ -9,7 +9,7 @@ from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_core.vectorstores import VectorStore
 
 from .agenda_chain import AgendaClsOutput
-from .models import Decision, decision_to_document, decision_to_page_content, format_decision_for_prompt
+from .models import Decision, LLMExtractedDecision, decision_to_document, decision_to_page_content, format_decision_for_prompt, convert_extracted_to_decision
 
 
 logger = logging.getLogger(__name__)
@@ -399,3 +399,17 @@ class DecisionRelatedIndexer:
 
         # (기존 candidate) -> (신규) 엣지 upsert
         self._upsert_edges_existing_to_new(new_node_id, reps)
+
+    def upsert_new_llm_extracted_decision(
+            self,
+            llm_extracted_decision: LLMExtractedDecision,
+        ):
+        """
+        LLMExtractedDecision 을 Decision 으로 변환 후 `upsert_new_decision` 메서드 실행
+
+        Args:
+            - llm_extracted_decision (LLMExtractedDecision) : raw decision
+        """
+        new_decision = convert_extracted_to_decision(llm_extracted_decision)
+
+        self.upsert_new_decision(new_decision=new_decision)

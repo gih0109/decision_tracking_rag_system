@@ -8,12 +8,12 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from decision_graph.config import AppConfig, LLMConfig, load_config
-from decision_graph.indexer import DecisionRelatedIndexer
-from decision_graph.models import LLMExtractedDecision
-from decision_graph.neo4j_store import create_neo4j_vector_store
+from src.decision_graph.config import AppConfig, LLMConfig, load_config
+from src.decision_graph.indexer import DecisionRelatedIndexer
+from src.decision_graph.models import LLMExtractedDecision
+from src.decision_graph.neo4j_store import create_neo4j_vector_store
 
-from nn_agenda_llm_chain import build_nn_agenda_cls_chain, bulid_nn_agenda_cls_gpt5_chain
+from src.decision_graph.agenda_chain import build_nn_agenda_cls_chain, build_nn_agenda_cls_gpt5_chain
 
 load_dotenv()
 
@@ -49,7 +49,7 @@ def build_agenda_chain(cfg: LLMConfig):
     """
     if cfg.provider == "openai":
         if cfg.reasoning_effort is not None:
-            return bulid_nn_agenda_cls_gpt5_chain(
+            return build_nn_agenda_cls_gpt5_chain(
                 model_name=cfg.model,
                 temperature=cfg.temperature,
                 reasoning_effort=cfg.reasoning_effort,
@@ -85,7 +85,7 @@ def _parse_date_maybe(value: Any) -> Any:
 
 def main() -> None:
     # 1) config 로드
-    cfg: AppConfig = load_config("configs/indexer.yaml")
+    cfg: AppConfig = load_config("./config/config.yaml")
 
     # 2) Vector store 생성
     related_store = create_neo4j_vector_store(
