@@ -1,0 +1,27 @@
+# configs/indexer.example.yaml
+decisions_json_path: "examples/decisions.json"
+
+neo4j:
+  url: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "${NEO4J_PASSWORD}"     # 환경변수로 주입 권장
+  node_label: "Decision"
+  collection_name: "decision_related"
+
+embeddings:
+  model_name: "BAAI/bge-m3"
+  device: "cuda"                   # "cpu" | "cuda"
+
+llm:
+  provider: "gemini"               # "openai" | "gemini"
+  model: "gemini-2.5-flash"
+  temperature: 0.0
+  reasoning_effort: null           # gpt-5 계열 사용할 때 "low"|"medium"|"high"
+
+indexer:
+  similarity_threshold: 0.6
+  related_top_k: 10
+  related_recent_meetings_num: null
+  max_concurrency: 10
+  relationship_type: "RELATED"
+  node_label: "Decision"
