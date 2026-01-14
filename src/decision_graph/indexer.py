@@ -374,10 +374,18 @@ class DecisionRelatedIndexer:
                 }
             )
 
+        # same agenda 
         same_agenda = [
             r for r in related
             if r.get("is_same_agenda") is True and r.get("candidate_node_id") and "error" not in r
         ]
+        if len(same_agenda) > 0:
+            if new_decision.related_decision_ids is None:
+                new_decision.related_decision_ids = []
+            for agenda in same_agenda:
+                c_id, c_relation_score = agenda.get("candidate_decision_id"), agenda.get("relation_score")
+                if c_id and c_id not in new_decision.related_decision_ids:
+                    new_decision.related_decision_ids.append(f"{c_id},{c_relation_score}")
 
         # 같은 안건이 없으면 created로 노드만 적재
         if not same_agenda:
